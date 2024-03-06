@@ -290,8 +290,8 @@ int main()
         cout << "************** Starting Game... **************" << endl;
         for (int i = 0; i < rounds; i++){
             turn(&playerDeck, &playerSide, &computerDeck, &computerSide);
-            cout << "You have " << playerDeck.getSize() << " cards" << endl;
-            cout << "The computer has " << computerDeck.getSize() << " cards" << endl;
+            cout << "You have " << playerDeck.getSize() << " cards in your deck and " << playerSide.length() << " cards in your side pile." << endl;
+            cout << "The computer has " << computerDeck.getSize() << " cards in its deck." << endl;
             cout << "There are " << (rounds - 1) - i << " rounds left!" << endl;
           cout << "**************Next Turn**************" << endl;
         }
