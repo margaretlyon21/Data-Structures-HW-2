@@ -29,7 +29,7 @@ class Deck
         std::default_random_engine generator(seed);
         std::uniform_int_distribution<int> distribution(1, 13);
 
-        for (int i = 0; i < 32; i++) {
+        for (int i = 0; i < 33; i++) {
             int random = distribution(generator);
             enqueue(random);
         }
@@ -48,7 +48,6 @@ class Deck
         rear->next = temp;
         rear = temp;
         size++;
-        cout << card << " succefully added, current size now" << size << "\n";
     }
 
     int dequeue(){
@@ -63,7 +62,6 @@ class Deck
             rear = nullptr;
         }
         delete (temp);
-        cout << data << " succesfully removed\n";
         return data;
     }
     int getSize(){
@@ -94,7 +92,7 @@ class Side
       throw stackUnderflow();
     }
     return data[--index];
-    
+
     }
 
   //Checks if stack is full
@@ -177,8 +175,6 @@ void turn(Deck* playersDeck, Side* playersSide, Deck* computersDeck, Side* compu
     // Drawing the card
     int draw = playersDeck->dequeue();
     int compDraw = computersDeck->dequeue();
-    cout << draw << " successfully dequeued from your deck\n";
-    cout << compDraw << " successfully dequeed from computer deck\n";
     int draw2 = 0;
     int total = 0;
     cout << "You drew a " << faceValues(draw) << "!" << endl;
@@ -204,25 +200,20 @@ void turn(Deck* playersDeck, Side* playersSide, Deck* computersDeck, Side* compu
         {
             cout << "Computer wins this round! taking both cards..." << endl;
             computersDeck->enqueue(compDraw);
-            cout << compDraw << " successfully enqueued to computer deck\n";
             computersDeck->enqueue(draw);
-            cout << draw << " successfully enqueued to computer deck\n";
         }
         else
         {
             cout << "You win this round! adding both cards to your deck... " << endl;
             playersDeck->enqueue(compDraw);
-            cout << compDraw << " successfully enqueued to your deck " << endl;
             playersDeck->enqueue(draw);
-            cout << draw << " successfully enqueued to your deck\n";
-
         }
     }
 
     if (choice == 2)
     {
         //add this card to your side pile and play another
-        cout << "Adding " << draw << " to the side pile.....\n";
+        cout << "Adding " << faceValues(draw) << " to the side pile.....\n";
         playersSide->Push(draw);
         draw2 = playersDeck->dequeue();
         cout << "You drew a " << faceValues(draw2) << "!" << endl;
@@ -244,6 +235,7 @@ void turn(Deck* playersDeck, Side* playersSide, Deck* computersDeck, Side* compu
     if (choice == 3)
     {
         //play this card and one from the side
+        if (playersSide->length() != 0){
         int sideDraw = playersSide->Pop();
         cout << "You picked up a " << sideDraw << "from your side pile. " << endl;
         total = sideDraw + draw;
@@ -263,6 +255,10 @@ void turn(Deck* playersDeck, Side* playersSide, Deck* computersDeck, Side* compu
             playersDeck->enqueue(draw);
         }
     }
+    else{
+      cout << "You have no cards in your side pile! Try again!" << endl;
+    }
+    }
     return;
 }
 
@@ -272,7 +268,7 @@ int main()
     Side playerSide;
     Deck computerDeck;
     Side computerSide;
-    cout << "Welcome to War! \nEnter 1 if you would like to play until someone rins out of cards.\nEnter 2 if you would like to play a set number of rounds!" << endl;
+    cout << "Welcome to War! \nEnter 1 if you would like to play until someone runs out of cards.\nEnter 2 if you would like to play a set number of rounds!" << endl;
     int choice;
     cin >> choice;
     if (choice == 1)
@@ -297,6 +293,7 @@ int main()
             turn(&playerDeck, &playerSide, &computerDeck, &computerSide);
             cout << "You have " << playerDeck.getSize() << " cards" << endl;
             cout << "The computer has " << computerDeck.getSize() << " cards" << endl;
+            cout << "There are " << rounds - i << " rounds left!" << endl;
         }
     }
 }
