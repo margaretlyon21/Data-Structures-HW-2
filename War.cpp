@@ -276,10 +276,10 @@ int main()
         cout << "************** Starting Game... **************" << endl;
         while(!playerDeck.isEmpty() && !computerDeck.isEmpty())
         {
-            cout << "-------Turn Start-------" << endl;
             turn(&playerDeck, &playerSide, &computerDeck, &computerSide);
             cout << "You have " << playerDeck.getSize() << " cards" << endl;
             cout << "The computer has " << computerDeck.getSize() << " cards" << endl;
+          cout << "**************Next Turn**************" << endl;
         }
     }
     else if (choice == 2) 
@@ -289,11 +289,11 @@ int main()
         cin >> rounds;
         cout << "************** Starting Game... **************" << endl;
         for (int i = 0; i < rounds; i++){
-            cout << "-------Turn Start-------" << endl;
             turn(&playerDeck, &playerSide, &computerDeck, &computerSide);
             cout << "You have " << playerDeck.getSize() << " cards" << endl;
             cout << "The computer has " << computerDeck.getSize() << " cards" << endl;
-            cout << "There are " << rounds - i << " rounds left!" << endl;
+            cout << "There are " << (rounds - 1) - i << " rounds left!" << endl;
+          cout << "**************Next Turn**************" << endl;
         }
     }
 }
