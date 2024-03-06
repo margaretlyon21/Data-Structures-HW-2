@@ -6,124 +6,11 @@
 #include <chrono>
 
 #include "Exception.h"
+#include "Node.h"
+#include "Deck.h"
+#include "Side.h"
 
 using namespace std;
-
-class Node
-{
-    public:
-        int data;
-        Node* next;
-        Node(int val) : data(val), next(nullptr){}
-};
-
-class Deck
-{
-    private:
-    Node* front;
-    Node* rear;
-    int size;
-    public:
-    Deck() : front(nullptr), rear(nullptr), size(0) {
-        unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
-        std::default_random_engine generator(seed);
-        std::uniform_int_distribution<int> distribution(1, 13);
-
-        for (int i = 0; i < 33; i++) {
-            int random = distribution(generator);
-            enqueue(random);
-        }
-    }
-
-    bool isEmpty(){
-        return front == nullptr;
-    }
-
-    void enqueue(int card){
-        Node* temp =  new Node(card);
-        if (isEmpty()){
-            front = rear = temp;
-            return;
-        }
-        rear->next = temp;
-        rear = temp;
-        size++;
-    }
-
-    int dequeue(){
-        if (isEmpty()){
-            throw queueUnderflow();
-        }
-        int data = front->data;
-        Node* temp = front;
-        front = front->next;
-        size -= 1;
-        if (isEmpty()){
-            rear = nullptr;
-        }
-        delete (temp);
-        return data;
-    }
-    int getSize(){
-        return size;
-    }
-};
-
-class Side
-{
-    public:
-    int size;
-    int data[5];
-    int index;
-
-    Side() : size(5), index(0) {}
-
-  //Pushes an element to the top of the stack
-  void Push(int input){
-    if(isFull()){
-      throw stackOverflow();
-    }
-    data[index++] = input;
-  }
-
-  //Pops an element from the top of the stack
-  int Pop(){
-    if (isEmpty()){
-      throw stackUnderflow();
-    }
-    return data[--index];
-
-    }
-
-  //Checks if stack is full
-  bool isFull(){
-    return index >= size;
-  }
-  //Checks if stack is empty
-  bool isEmpty(){
-    return index <= 0;
-  }
-
-  //Returns element at top of stack
-  int top(){
-    if (isEmpty()){
-      throw stackUnderflow();
-    }
-    return data[index - 1];
-  }
-
-  //Returns size of stack
-  int length(){
-    return index;
-  }
-
-  //Empties the stack
-  void empty(){
-    while (!isEmpty()){
-      Pop();
-    }
-  }
-};
 
 string faceValues(int card)
 {
@@ -169,7 +56,7 @@ string faceValues(int card)
     return "";
 }
 
-void turn(Deck* playersDeck, Side* playersSide, Deck* computersDeck, Side* computersSide)
+void turn(Deck* playersDeck, Side* playersSide, Deck* computersDeck, Side* computersSide, int &rounds)
 {
 
     // Drawing the card
@@ -218,6 +105,7 @@ void turn(Deck* playersDeck, Side* playersSide, Deck* computersDeck, Side* compu
         draw2 = playersDeck->dequeue();
         cout << "You drew a " << faceValues(draw2) << "!" << endl;
         cout << "You played the " << faceValues(draw2) << "!" << endl;
+        cout << "The computer played a " << faceValues(compDraw) << endl;
         if (compDraw > draw2)
         {
             cout << "Computer wins this round! taking both cards..." << endl;
@@ -230,7 +118,7 @@ void turn(Deck* playersDeck, Side* playersSide, Deck* computersDeck, Side* compu
             playersDeck->enqueue(compDraw);
             playersDeck->enqueue(draw2);
         }
-    }
+      }
 
     if (choice == 3)
     {
@@ -257,6 +145,10 @@ void turn(Deck* playersDeck, Side* playersSide, Deck* computersDeck, Side* compu
     }
     else{
       cout << "You have no cards in your side pile! Try again!" << endl;
+      computersDeck->enqueue(compDraw);
+      playersDeck->enqueue(draw);
+        
+      rounds += 1;
     }
     }
     return;
@@ -275,11 +167,19 @@ int main()
     {
         cout << "************** Starting Game... **************" << endl;
         while(!playerDeck.isEmpty() && !computerDeck.isEmpty())
-        {
-            turn(&playerDeck, &playerSide, &computerDeck, &computerSide);
-            cout << "You have " << playerDeck.getSize() << " cards" << endl;
+        { 
+            int rounds = 0;
+            turn(&playerDeck, &playerSide, &computerDeck, &computerSide, rounds);
+          cout << "You have " << playerDeck.getSize() << " cards in your deck and " << playerSide.length() << " cards in your side pile." << endl;
             cout << "The computer has " << computerDeck.getSize() << " cards" << endl;
           cout << "**************Next Turn**************" << endl;
+          if (playerDeck.isEmpty()){
+            while (!playerSide.isEmpty()){
+                turn(&playerDeck, &playerSide, &computerDeck, &computerSide, rounds);
+                cout << "You have " << playerDeck.getSize() << " cards in your deck and " << playerSide.length() << " cards in your side pile." << endl;
+                cout << "The computer has " << computerDeck.getSize() << " cards in its deck." << endl;
+            }
+          }
         }
     }
     else if (choice == 2) 
@@ -289,7 +189,7 @@ int main()
         cin >> rounds;
         cout << "************** Starting Game... **************" << endl;
         for (int i = 0; i < rounds; i++){
-            turn(&playerDeck, &playerSide, &computerDeck, &computerSide);
+            turn(&playerDeck, &playerSide, &computerDeck, &computerSide, rounds);
             cout << "You have " << playerDeck.getSize() << " cards in your deck and " << playerSide.length() << " cards in your side pile." << endl;
             cout << "The computer has " << computerDeck.getSize() << " cards in its deck." << endl;
             cout << "There are " << (rounds - 1) - i << " rounds left!" << endl;
