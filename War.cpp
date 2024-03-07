@@ -209,7 +209,17 @@ int main()
             cout << "You have " << playerDeck.getSize() << " cards in your deck and " << playerSide.length() << " cards in your side pile." << endl;
             cout << "The computer has " << computerDeck.getSize() << " cards in its deck." << endl;
             cout << "There are " << (rounds - 1) - i << " rounds left!" << endl;
-          cout << "**************Next Turn**************" << endl;
+            if ((rounds - 1) - i != 0){
+                cout << "**************Next Turn**************" << endl;
+            }
+        }
+      cout << "**************Game over**************" << endl;
+      if (computerDeck.getSize() > playerDeck.getSize()){
+        cout << "You lose :<" << endl;
+      }
+      else{
+        cout << "You win!" << endl;
+      }
         }
     }
 }
