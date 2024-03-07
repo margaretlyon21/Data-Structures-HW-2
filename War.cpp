@@ -72,8 +72,12 @@ void turn(Deck* playersDeck, Side* playersSide, Deck* computersDeck, Side* compu
 
     int choice;
     cin >> choice;
-    while (choice != 1 && choice != 2 && choice != 3)
+    while (choice != 1 && choice != 2 && (choice != 3 || playersSide->isEmpty()))
     {
+        if (choice == 3)
+        {
+            cout << "Player's Side Deck is empty!" << endl;
+        }
         cout << "Invalid choice! Please try again." << endl;
         cin >> choice;
     }
