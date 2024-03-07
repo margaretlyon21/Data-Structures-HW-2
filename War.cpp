@@ -153,8 +153,6 @@ void turn(Deck* playersDeck, Side* playersSide, Deck* computersDeck, Side* compu
             playersDeck->enqueue(draw);
         }
     }
-
-    rounds += 1;
     return;
 }
 
@@ -173,7 +171,7 @@ int main()
         cout << "************** Starting Game... **************" << endl;
         while(!playerDeck.isEmpty() && !computerDeck.isEmpty())
         { 
-            
+
             turn(&playerDeck, &playerSide, &computerDeck, &computerSide, rounds);
             cout << "You have " << playerDeck.getSize() << " cards in your deck and " << playerSide.length() << " cards in your side pile." << endl;
             cout << "The computer has " << computerDeck.getSize() << " cards" << endl;
@@ -221,5 +219,5 @@ int main()
         cout << "You win!" << endl;
       }
         }
-    }
 }
+
